@@ -253,19 +253,27 @@ class Abstra {
     selection && this.mount(selection);
   }
   mount(selection = "#app") {
+    // 获取挂在元素
     this._getEl(selection);
+    // 获取挂在元素下的模板
     this._getTemplate();
+    // 根据模板渲染组件
     this.renderContent();
   }
   renderContent() {
+    // 根据注册组件去渲染
     this.components.forEach((component) => {
       const { name, setup } = component;
       if (!this.tempMap.has(name))
         return console.error(new Error(`${name}组件未找到模板`));
+      // 获取模板
       const template = this.tempMap.get(name);
+      // 模板转DOM
       const templateDom = HTML2DOM(template.innerHTML);
+      // 找到模板对应的组件标签
       const tags = Array.from(document.body.getElementsByTagName(name));
       tags.forEach((element) => {
+        // 循环在组件标签内追加解析后的新DOM
         this._compiler(templateDom, setup(), true).forEach((dom) => {
           element.appendChild(dom);
         });
@@ -284,10 +292,26 @@ class Abstra {
       Array.from(newNode.attributes, (o) => {
         const { name, value } = o;
         if (name.startsWith("@")) {
-          newNode.addEventListener(
-            name.substring(1),
-            new Function(value).bind(ctx)
-          );
+          newNode.addEventListener(name.substring(1), ($event) => {
+            new Function(value).call({ ...ctx, $event });
+          });
+        }
+      });
+      Array.from(newNode.childNodes, (m) => {
+        if (m.nodeType !== 3) return;
+        let nodeValue = m.nodeValue;
+        const textList = m.nodeValue.match(/{{.+}}/g);
+        if (textList) {
+          const replaceText = () => {
+            textList.forEach((text) => {
+              new Function(
+                `this.__newValue=${text.substring(2, text.length - 2)}`
+              ).call(ctx);
+              nodeValue = nodeValue.replace(text, ctx.__newValue);
+            });
+            m.nodeValue = nodeValue;
+          };
+          replaceText();
         }
       });
       return newNode;

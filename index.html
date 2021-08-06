@@ -10,10 +10,12 @@
   <body>
     <div id="app">
       <template data-name="test-comp">
-        <p><button @click="this.changeState()">change</button></p>
-        <p>state: {{JSON.stringify(state)}}</p>
-        <p><button @click="this.addCount()">count: {{count}}</button></p>
-        <p>double: {{double}}</p>
+        <p><button @click="this.changeState(this.$event)">change</button></p>
+        <p>state: {{JSON.stringify(this.state)}}</p>
+        <p>
+          <button @click="this.addCount()">count: {{this.count.value}}</button>
+        </p>
+        <p>double: {{this.double.value}}</p>
       </template>
       <test-comp></test-comp>
       <test-comp></test-comp>

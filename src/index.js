@@ -20,8 +20,7 @@
             count.value++;
           },
           state,
-          changeState: (row) => {
-            console.log(row, 1);
+          changeState: () => {
             state.text = Math.random().toFixed(2);
             state.obj.a++;
             state.obj.b--;
