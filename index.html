@@ -6,9 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>abstra</title>
   </head>
+
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <template data-name="test-comp">
+        <p><button @click="this.changeState()">change</button></p>
+        <p>state: {{JSON.stringify(state)}}</p>
+        <p><button @click="this.addCount()">count: {{count}}</button></p>
+        <p>double: {{double}}</p>
+      </template>
+      <test-comp></test-comp>
+      <test-comp></test-comp>
+    </div>
+
+    <!-- core -->
     <script src="./src/abstra.js"></script>
+    <!-- example -->
     <script src="./src/index.js"></script>
   </body>
 </html>
